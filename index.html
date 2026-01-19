@@ -248,7 +248,7 @@
             border-radius: 16px;
             padding: 30px;
             margin-bottom: 25px;
-            min-height: 280px;
+            min-height: 300px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -263,12 +263,6 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 20px;
-        }
-
-        .stick-figure {
-            position: relative;
-            width: 120px;
-            height: 180px;
         }
 
         .cues-container {
@@ -291,18 +285,23 @@
             font-weight: bold;
             color: #ff6b6b;
             line-height: 1;
+            transition: color 0.3s, transform 0.1s;
+        }
+
+        .timer-display.countdown-warning {
+            color: #ffc107;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .timer-label {
             color: #888;
             font-size: 1rem;
             margin-top: 5px;
-        }
-
-        .reps-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #4ecdc4;
         }
 
         .up-next {
@@ -367,50 +366,39 @@
             font-size: 0.9rem;
         }
 
-        .rest-indicator {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        /* SVG Animations */
+        /* Rich Figure Animation Styles */
         .figure-svg {
-            width: 150px;
-            height: 200px;
+            width: 200px;
+            height: 220px;
         }
 
-        .figure-svg .body-part {
-            stroke: #ff6b6b;
-            stroke-width: 4;
-            stroke-linecap: round;
+        .figure-svg.paused * {
+            animation-play-state: paused !important;
+        }
+
+        /* Body part fills and strokes */
+        .body-fill {
+            fill: #ff6b6b;
+        }
+
+        .body-outline {
             fill: none;
+            stroke: #ff8e8e;
+            stroke-width: 2;
         }
 
-        .figure-svg .head {
-            fill: none;
-            stroke: #ff6b6b;
-            stroke-width: 4;
+        .skin-tone {
+            fill: #ffb07c;
         }
 
-        /* Animation keyframes for different exercises */
-        @keyframes crunch {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-30deg); }
+        .clothing {
+            fill: #4ecdc4;
         }
 
-        @keyframes legRaise {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-80deg); }
-        }
-
-        @keyframes bicycle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(20deg); }
-            50% { transform: rotate(0deg); }
-            75% { transform: rotate(-20deg); }
+        .equipment-color {
+            fill: #666;
+            stroke: #888;
+            stroke-width: 2;
         }
 
         .hidden {
@@ -491,9 +479,30 @@
         .restart-btn:hover {
             transform: translateY(-2px);
         }
+
+        /* Sound toggle */
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 100;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 <body>
+    <button class="sound-toggle" id="sound-toggle" onclick="toggleSound()">🔊</button>
+
     <div class="container">
         <!-- Home Screen -->
         <div id="home-screen">
@@ -618,6 +627,48 @@
     </div>
 
     <script>
+        // Audio Context for beep sounds
+        let audioContext = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep(frequency = 800, duration = 150, type = 'sine') {
+            if (!soundEnabled || !audioContext) return;
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+        }
+
+        function playCountdownBeep(secondsLeft) {
+            if (secondsLeft > 1) {
+                playBeep(600, 100, 'sine');
+            } else if (secondsLeft === 1) {
+                playBeep(900, 300, 'sine');
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
+        }
+
         // Exercise data organized by session
         const exercises = {
             A: [
@@ -700,134 +751,301 @@
             4: { setsMultiplier: 1.33, note: "Add 4th set to top exercises. Slow negatives (3 sec).", repsAdjust: "normal" }
         };
 
-        // Animation SVGs for each exercise
+        // Rich Animation SVGs for each exercise
         const animationSVGs = {
             "hanging-knee-raise": `
-                <svg class="figure-svg" viewBox="0 0 150 200">
-                    <circle class="head" cx="75" cy="25" r="15"/>
-                    <line class="body-part" x1="75" y1="40" x2="75" y2="90"/>
-                    <line class="body-part" x1="75" y1="50" x2="55" y2="20"/>
-                    <line class="body-part" x1="75" y1="50" x2="95" y2="20"/>
-                    <g id="legs-group" style="transform-origin: 75px 90px;">
-                        <line class="body-part" x1="75" y1="90" x2="60" y2="140"/>
-                        <line class="body-part" x1="60" y1="140" x2="55" y2="180"/>
-                        <line class="body-part" x1="75" y1="90" x2="90" y2="140"/>
-                        <line class="body-part" x1="90" y1="140" x2="95" y2="180"/>
+                <svg class="figure-svg" viewBox="0 0 200 280" id="exercise-svg">
+                    <!-- Pull-up bar -->
+                    <rect x="20" y="5" width="160" height="8" rx="4" fill="#666"/>
+                    <rect x="85" y="13" width="30" height="20" rx="3" fill="#555"/>
+
+                    <!-- Arms holding bar -->
+                    <ellipse cx="75" cy="45" rx="8" ry="12" fill="#ffb07c"/>
+                    <ellipse cx="125" cy="45" rx="8" ry="12" fill="#ffb07c"/>
+                    <rect x="70" y="33" width="10" height="8" rx="2" fill="#ffb07c"/>
+                    <rect x="120" y="33" width="10" height="8" rx="2" fill="#ffb07c"/>
+
+                    <!-- Head -->
+                    <circle cx="100" cy="70" r="18" fill="#ffb07c"/>
+                    <ellipse cx="93" cy="68" rx="3" ry="2" fill="#333"/>
+                    <ellipse cx="107" cy="68" rx="3" ry="2" fill="#333"/>
+                    <path d="M95 76 Q100 80 105 76" stroke="#333" stroke-width="2" fill="none"/>
+
+                    <!-- Torso -->
+                    <path d="M80 88 Q75 100 78 140 L122 140 Q125 100 120 88 Z" fill="#4ecdc4"/>
+
+                    <!-- Animated legs group -->
+                    <g id="legs-anim" style="transform-origin: 100px 140px;">
+                        <!-- Hips -->
+                        <ellipse cx="100" cy="145" rx="25" ry="12" fill="#333"/>
+                        <!-- Upper legs -->
+                        <ellipse cx="85" cy="175" rx="12" ry="25" fill="#ffb07c"/>
+                        <ellipse cx="115" cy="175" rx="12" ry="25" fill="#ffb07c"/>
+                        <!-- Knees -->
+                        <circle cx="85" cy="200" r="10" fill="#ffb07c"/>
+                        <circle cx="115" cy="200" r="10" fill="#ffb07c"/>
+                        <!-- Lower legs -->
+                        <ellipse cx="85" cy="230" rx="9" ry="22" fill="#ffb07c"/>
+                        <ellipse cx="115" cy="230" rx="9" ry="22" fill="#ffb07c"/>
+                        <!-- Feet -->
+                        <ellipse cx="85" cy="258" rx="12" ry="6" fill="#333"/>
+                        <ellipse cx="115" cy="258" rx="12" ry="6" fill="#333"/>
                     </g>
+
                     <style>
-                        #legs-group { animation: legRaise 2s ease-in-out infinite; }
-                        @keyframes legRaise {
-                            0%, 100% { transform: rotate(0deg); }
-                            50% { transform: rotate(-70deg); }
+                        #legs-anim {
+                            animation: kneeRaise 2.5s ease-in-out infinite;
+                        }
+                        @keyframes kneeRaise {
+                            0%, 100% { transform: rotate(0deg) translateY(0); }
+                            50% { transform: rotate(-75deg) translateY(-20px); }
                         }
                     </style>
                 </svg>`,
+
             "cable-crunch": `
-                <svg class="figure-svg" viewBox="0 0 150 200">
-                    <g id="body-group" style="transform-origin: 75px 100px;">
-                        <circle class="head" cx="75" cy="45" r="15"/>
-                        <line class="body-part" x1="75" y1="60" x2="75" y2="110"/>
-                        <line class="body-part" x1="75" y1="70" x2="55" y2="50"/>
-                        <line class="body-part" x1="75" y1="70" x2="95" y2="50"/>
+                <svg class="figure-svg" viewBox="0 0 200 260" id="exercise-svg">
+                    <!-- Cable machine frame -->
+                    <rect x="85" y="0" width="30" height="15" fill="#555"/>
+                    <line x1="100" y1="15" x2="100" y2="50" stroke="#4ecdc4" stroke-width="3"/>
+                    <circle cx="100" cy="50" r="8" fill="#4ecdc4"/>
+
+                    <!-- Animated upper body -->
+                    <g id="upper-body-anim" style="transform-origin: 100px 180px;">
+                        <!-- Hands holding rope -->
+                        <circle cx="90" cy="65" r="8" fill="#ffb07c"/>
+                        <circle cx="110" cy="65" r="8" fill="#ffb07c"/>
+
+                        <!-- Arms -->
+                        <ellipse cx="85" cy="85" rx="8" ry="18" fill="#ffb07c"/>
+                        <ellipse cx="115" cy="85" rx="8" ry="18" fill="#ffb07c"/>
+
+                        <!-- Head -->
+                        <circle cx="100" cy="110" r="18" fill="#ffb07c"/>
+                        <ellipse cx="93" cy="108" rx="3" ry="2" fill="#333"/>
+                        <ellipse cx="107" cy="108" rx="3" ry="2" fill="#333"/>
+
+                        <!-- Torso -->
+                        <path d="M78 128 Q72 150 75 180 L125 180 Q128 150 122 128 Z" fill="#4ecdc4"/>
                     </g>
-                    <line class="body-part" x1="60" y1="110" x2="60" y2="160"/>
-                    <line class="body-part" x1="90" y1="110" x2="90" y2="160"/>
-                    <line class="body-part" x1="60" y1="160" x2="55" y2="180"/>
-                    <line class="body-part" x1="90" y1="160" x2="95" y2="180"/>
-                    <line class="body-part" stroke="#4ecdc4" x1="75" y1="20" x2="75" y2="0"/>
+
+                    <!-- Kneeling legs (static) -->
+                    <ellipse cx="100" cy="195" rx="30" ry="12" fill="#333"/>
+                    <ellipse cx="80" cy="220" rx="15" ry="20" fill="#ffb07c"/>
+                    <ellipse cx="120" cy="220" rx="15" ry="20" fill="#ffb07c"/>
+                    <ellipse cx="80" cy="248" rx="18" ry="8" fill="#333"/>
+                    <ellipse cx="120" cy="248" rx="18" ry="8" fill="#333"/>
+
                     <style>
-                        #body-group { animation: crunchDown 2s ease-in-out infinite; }
-                        @keyframes crunchDown {
+                        #upper-body-anim {
+                            animation: cableCrunch 2s ease-in-out infinite;
+                        }
+                        @keyframes cableCrunch {
                             0%, 100% { transform: rotate(0deg); }
-                            50% { transform: rotate(35deg); }
+                            50% { transform: rotate(40deg); }
                         }
                     </style>
                 </svg>`,
+
             "reverse-crunch": `
-                <svg class="figure-svg" viewBox="0 0 200 120">
-                    <circle class="head" cx="30" cy="50" r="12"/>
-                    <line class="body-part" x1="42" y1="50" x2="100" y2="50"/>
-                    <line class="body-part" x1="50" y1="50" x2="40" y2="70"/>
-                    <line class="body-part" x1="50" y1="50" x2="40" y2="30"/>
-                    <g id="pelvis-legs" style="transform-origin: 100px 50px;">
-                        <line class="body-part" x1="100" y1="50" x2="140" y2="55"/>
-                        <line class="body-part" x1="140" y1="55" x2="180" y2="50"/>
-                        <line class="body-part" x1="100" y1="50" x2="140" y2="45"/>
-                        <line class="body-part" x1="140" y1="45" x2="180" y2="50"/>
+                <svg class="figure-svg" viewBox="0 0 260 160" id="exercise-svg">
+                    <!-- Mat -->
+                    <rect x="10" y="120" width="240" height="12" rx="3" fill="#4ecdc4" opacity="0.3"/>
+
+                    <!-- Head (static) -->
+                    <circle cx="45" cy="95" r="16" fill="#ffb07c"/>
+                    <ellipse cx="50" cy="93" rx="3" ry="2" fill="#333"/>
+
+                    <!-- Upper body (static) -->
+                    <path d="M60 85 L60 115 L130 115 L130 90 Q95 85 60 85" fill="#4ecdc4"/>
+
+                    <!-- Arms behind head -->
+                    <ellipse cx="35" cy="80" rx="8" ry="12" fill="#ffb07c"/>
+                    <ellipse cx="55" cy="75" rx="8" ry="12" fill="#ffb07c"/>
+
+                    <!-- Animated lower body -->
+                    <g id="lower-body-anim" style="transform-origin: 130px 105px;">
+                        <!-- Hips -->
+                        <ellipse cx="145" cy="105" rx="20" ry="15" fill="#333"/>
+                        <!-- Upper legs -->
+                        <ellipse cx="165" cy="90" rx="22" ry="12" fill="#ffb07c"/>
+                        <ellipse cx="165" cy="110" rx="22" ry="12" fill="#ffb07c"/>
+                        <!-- Knees -->
+                        <circle cx="190" cy="90" r="10" fill="#ffb07c"/>
+                        <circle cx="190" cy="110" r="10" fill="#ffb07c"/>
+                        <!-- Lower legs -->
+                        <ellipse cx="215" cy="85" rx="20" ry="9" fill="#ffb07c"/>
+                        <ellipse cx="215" cy="115" rx="20" ry="9" fill="#ffb07c"/>
+                        <!-- Feet -->
+                        <ellipse cx="238" cy="85" rx="8" ry="12" fill="#333"/>
+                        <ellipse cx="238" cy="115" rx="8" ry="12" fill="#333"/>
                     </g>
+
                     <style>
-                        #pelvis-legs { animation: reverseCrunch 2s ease-in-out infinite; }
-                        @keyframes reverseCrunch {
+                        #lower-body-anim {
+                            animation: reverseCrunchMove 2s ease-in-out infinite;
+                        }
+                        @keyframes reverseCrunchMove {
                             0%, 100% { transform: rotate(0deg); }
-                            50% { transform: rotate(-40deg); }
+                            50% { transform: rotate(-45deg); }
                         }
                     </style>
                 </svg>`,
+
             "decline-crunch": `
-                <svg class="figure-svg" viewBox="0 0 200 150">
-                    <line class="body-part" stroke="#666" stroke-width="6" x1="20" y1="100" x2="180" y2="60"/>
-                    <g id="upper-body" style="transform-origin: 100px 75px;">
-                        <circle class="head" cx="60" cy="60" r="12"/>
-                        <line class="body-part" x1="72" y1="65" x2="120" y2="80"/>
-                        <line class="body-part" x1="80" y1="68" x2="70" y2="85"/>
-                        <line class="body-part" x1="80" y1="68" x2="65" y2="55"/>
+                <svg class="figure-svg" viewBox="0 0 260 180" id="exercise-svg">
+                    <!-- Decline bench -->
+                    <path d="M20 140 L220 80" stroke="#666" stroke-width="12" stroke-linecap="round"/>
+                    <rect x="200" y="60" width="30" height="40" rx="5" fill="#555"/>
+
+                    <!-- Feet locked -->
+                    <ellipse cx="215" cy="72" rx="12" ry="8" fill="#333"/>
+                    <ellipse cx="215" cy="88" rx="12" ry="8" fill="#333"/>
+
+                    <!-- Lower body (static on bench) -->
+                    <ellipse cx="180" cy="85" rx="20" ry="12" fill="#ffb07c"/>
+                    <ellipse cx="180" cy="100" rx="20" ry="12" fill="#ffb07c"/>
+                    <ellipse cx="155" cy="95" rx="18" ry="15" fill="#333"/>
+
+                    <!-- Animated upper body -->
+                    <g id="crunch-body-anim" style="transform-origin: 140px 105px;">
+                        <!-- Torso -->
+                        <path d="M140 95 Q110 100 80 115 L85 135 Q115 125 145 115 Z" fill="#4ecdc4"/>
+                        <!-- Head -->
+                        <circle cx="65" cy="110" r="16" fill="#ffb07c"/>
+                        <ellipse cx="60" cy="108" rx="2" ry="2" fill="#333"/>
+                        <ellipse cx="70" cy="108" rx="2" ry="2" fill="#333"/>
+                        <!-- Arms crossed on chest -->
+                        <ellipse cx="100" cy="115" rx="15" ry="8" fill="#ffb07c"/>
+                        <ellipse cx="100" cy="125" rx="15" ry="8" fill="#ffb07c"/>
                     </g>
-                    <line class="body-part" x1="120" y1="80" x2="160" y2="65"/>
-                    <line class="body-part" x1="160" y1="65" x2="175" y2="55"/>
+
                     <style>
-                        #upper-body { animation: declineCrunch 2s ease-in-out infinite; }
-                        @keyframes declineCrunch {
-                            0%, 100% { transform: rotate(-15deg); }
-                            50% { transform: rotate(20deg); }
+                        #crunch-body-anim {
+                            animation: declineCrunchMove 2s ease-in-out infinite;
+                        }
+                        @keyframes declineCrunchMove {
+                            0%, 100% { transform: rotate(-20deg); }
+                            50% { transform: rotate(25deg); }
                         }
                     </style>
                 </svg>`,
+
             "hanging-leg-raise": `
-                <svg class="figure-svg" viewBox="0 0 150 200">
-                    <circle class="head" cx="75" cy="25" r="15"/>
-                    <line class="body-part" x1="75" y1="40" x2="75" y2="90"/>
-                    <line class="body-part" x1="75" y1="50" x2="55" y2="20"/>
-                    <line class="body-part" x1="75" y1="50" x2="95" y2="20"/>
-                    <g id="straight-legs" style="transform-origin: 75px 90px;">
-                        <line class="body-part" x1="75" y1="90" x2="65" y2="170"/>
-                        <line class="body-part" x1="75" y1="90" x2="85" y2="170"/>
+                <svg class="figure-svg" viewBox="0 0 200 280" id="exercise-svg">
+                    <!-- Pull-up bar -->
+                    <rect x="20" y="5" width="160" height="8" rx="4" fill="#666"/>
+                    <rect x="85" y="13" width="30" height="20" rx="3" fill="#555"/>
+
+                    <!-- Arms holding bar -->
+                    <ellipse cx="75" cy="45" rx="8" ry="12" fill="#ffb07c"/>
+                    <ellipse cx="125" cy="45" rx="8" ry="12" fill="#ffb07c"/>
+                    <rect x="70" y="33" width="10" height="8" rx="2" fill="#ffb07c"/>
+                    <rect x="120" y="33" width="10" height="8" rx="2" fill="#ffb07c"/>
+
+                    <!-- Head -->
+                    <circle cx="100" cy="70" r="18" fill="#ffb07c"/>
+                    <ellipse cx="93" cy="68" rx="3" ry="2" fill="#333"/>
+                    <ellipse cx="107" cy="68" rx="3" ry="2" fill="#333"/>
+                    <path d="M95 76 Q100 80 105 76" stroke="#333" stroke-width="2" fill="none"/>
+
+                    <!-- Torso -->
+                    <path d="M80 88 Q75 100 78 140 L122 140 Q125 100 120 88 Z" fill="#4ecdc4"/>
+
+                    <!-- Animated straight legs -->
+                    <g id="straight-legs-anim" style="transform-origin: 100px 140px;">
+                        <!-- Hips -->
+                        <ellipse cx="100" cy="148" rx="25" ry="12" fill="#333"/>
+                        <!-- Upper legs -->
+                        <ellipse cx="90" cy="185" rx="11" ry="30" fill="#ffb07c"/>
+                        <ellipse cx="110" cy="185" rx="11" ry="30" fill="#ffb07c"/>
+                        <!-- Lower legs -->
+                        <ellipse cx="90" cy="240" rx="9" ry="28" fill="#ffb07c"/>
+                        <ellipse cx="110" cy="240" rx="9" ry="28" fill="#ffb07c"/>
+                        <!-- Feet -->
+                        <ellipse cx="90" cy="272" rx="12" ry="6" fill="#333"/>
+                        <ellipse cx="110" cy="272" rx="12" ry="6" fill="#333"/>
                     </g>
+
                     <style>
-                        #straight-legs { animation: straightLegRaise 2.5s ease-in-out infinite; }
+                        #straight-legs-anim {
+                            animation: straightLegRaise 3s ease-in-out infinite;
+                        }
                         @keyframes straightLegRaise {
                             0%, 100% { transform: rotate(0deg); }
-                            50% { transform: rotate(-85deg); }
+                            50% { transform: rotate(-90deg); }
                         }
                     </style>
                 </svg>`,
+
             "bicycle-crunch": `
-                <svg class="figure-svg" viewBox="0 0 200 120">
-                    <g id="bicycle-body" style="transform-origin: 80px 60px;">
-                        <circle class="head" cx="50" cy="40" r="12"/>
-                        <line class="body-part" x1="62" y1="45" x2="100" y2="60"/>
-                        <line class="body-part" x1="70" y1="50" x2="55" y2="65"/>
-                        <line class="body-part" x1="70" y1="50" x2="80" y2="35"/>
+                <svg class="figure-svg" viewBox="0 0 260 160" id="exercise-svg">
+                    <!-- Mat -->
+                    <rect x="10" y="130" width="240" height="10" rx="3" fill="#4ecdc4" opacity="0.3"/>
+
+                    <!-- Animated body -->
+                    <g id="bicycle-body-anim" style="transform-origin: 100px 100px;">
+                        <!-- Head -->
+                        <circle cx="70" cy="75" r="16" fill="#ffb07c"/>
+                        <ellipse cx="75" cy="73" rx="2" ry="2" fill="#333"/>
+
+                        <!-- Torso (twisting) -->
+                        <path d="M85 80 Q90 95 95 115 L145 115 Q140 95 135 85 Z" fill="#4ecdc4"/>
+
+                        <!-- Arms (one to knee, one behind head) -->
+                        <ellipse cx="55" cy="65" rx="8" ry="12" fill="#ffb07c"/>
+                        <ellipse cx="115" cy="90" rx="12" ry="8" fill="#ffb07c"/>
                     </g>
-                    <g id="bicycle-legs" style="transform-origin: 100px 60px;">
-                        <line class="body-part" x1="100" y1="60" x2="130" y2="40"/>
-                        <line class="body-part" x1="130" y1="40" x2="160" y2="50"/>
-                        <line class="body-part" x1="100" y1="60" x2="140" y2="80"/>
-                        <line class="body-part" x1="140" y1="80" x2="170" y2="90"/>
+
+                    <!-- Animated legs -->
+                    <g id="bicycle-legs-anim" style="transform-origin: 145px 115px;">
+                        <!-- Hips -->
+                        <ellipse cx="150" cy="115" rx="18" ry="12" fill="#333"/>
+
+                        <!-- Bent leg (coming in) -->
+                        <ellipse cx="140" cy="100" rx="10" ry="18" fill="#ffb07c"/>
+                        <ellipse cx="125" cy="85" rx="8" ry="15" fill="#ffb07c"/>
+                        <ellipse cx="118" cy="72" rx="10" ry="6" fill="#333"/>
+
+                        <!-- Extended leg -->
+                        <ellipse cx="185" cy="110" rx="25" ry="10" fill="#ffb07c"/>
+                        <ellipse cx="225" cy="115" rx="20" ry="8" fill="#ffb07c"/>
+                        <ellipse cx="248" cy="118" rx="8" ry="12" fill="#333"/>
                     </g>
+
                     <style>
-                        #bicycle-body { animation: bicycleTwist 1.5s ease-in-out infinite; }
-                        #bicycle-legs { animation: bicyclePedal 1.5s ease-in-out infinite; }
+                        #bicycle-body-anim {
+                            animation: bicycleTwist 1.5s ease-in-out infinite;
+                        }
+                        #bicycle-legs-anim {
+                            animation: bicyclePedal 1.5s ease-in-out infinite;
+                        }
                         @keyframes bicycleTwist {
-                            0%, 100% { transform: rotate(-10deg); }
-                            50% { transform: rotate(10deg); }
+                            0%, 100% { transform: rotate(-8deg) translateX(0); }
+                            50% { transform: rotate(8deg) translateX(10px); }
                         }
                         @keyframes bicyclePedal {
-                            0%, 100% { transform: scaleY(1); }
-                            50% { transform: scaleY(-1); }
+                            0%, 100% { transform: scaleX(1); }
+                            50% { transform: scaleX(-1) translateX(-40px); }
                         }
                     </style>
                 </svg>`
         };
+
+        // Rest animation
+        const restAnimation = `
+            <svg class="figure-svg" viewBox="0 0 200 200" id="exercise-svg">
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#4ecdc4" stroke-width="4" opacity="0.2"/>
+                <circle cx="100" cy="100" r="45" fill="none" stroke="#4ecdc4" stroke-width="3" opacity="0.4">
+                    <animate attributeName="r" values="35;55;35" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="100" cy="100" r="25" fill="none" stroke="#4ecdc4" stroke-width="2" opacity="0.6">
+                    <animate attributeName="r" values="20;35;20" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                </circle>
+                <text x="100" y="110" text-anchor="middle" fill="#4ecdc4" font-size="36">😤</text>
+                <text x="100" y="160" text-anchor="middle" fill="#888" font-size="14">BREATHE</text>
+            </svg>`;
 
         // State variables
         let currentSession = 'A';
@@ -839,7 +1057,7 @@
         let timer = null;
         let timeRemaining = 60;
         let totalElapsedTime = 0;
-        let totalWorkoutTime = 30 * 60; // 30 minutes estimate
+        let totalWorkoutTime = 30 * 60;
 
         // Initialize session buttons
         document.querySelectorAll('.session-btn').forEach(btn => {
@@ -860,11 +1078,13 @@
         }
 
         function startWorkout() {
+            initAudio();
             currentWeek = parseInt(document.getElementById('week-select').value);
             currentExerciseIndex = 0;
             currentSet = 1;
             isResting = false;
             totalElapsedTime = 0;
+            isPaused = false;
 
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('workout-screen').style.display = 'block';
@@ -891,9 +1111,7 @@
         function loadExercise() {
             const sessionExercises = exercises[currentSession];
             const exercise = sessionExercises[currentExerciseIndex];
-            const weekMod = weekModifiers[currentWeek];
 
-            // Adjust sets for week 4
             let displaySets = exercise.sets;
             if (currentWeek === 4 && currentExerciseIndex < 2) {
                 displaySets = 4;
@@ -908,17 +1126,15 @@
             // Load animation
             document.getElementById('exercise-animation').innerHTML = animationSVGs[exercise.animation] || '';
 
-            // Show reps instead of timer for rep-based exercises
+            // Apply pause state to animation
+            updateAnimationPauseState();
+
             document.getElementById('timer-display').textContent = exercise.reps.split('-')[0];
             document.getElementById('timer-label').textContent = 'reps target';
+            document.getElementById('timer-display').classList.remove('countdown-warning');
 
-            // Update up next
             updateUpNext();
-
-            // Update progress
             updateProgress();
-
-            // Set rest time
             timeRemaining = exercise.restTime;
         }
 
@@ -949,6 +1165,17 @@
             document.getElementById('progress-bar').style.width = `${Math.min(progress, 100)}%`;
         }
 
+        function updateAnimationPauseState() {
+            const svg = document.getElementById('exercise-svg');
+            if (svg) {
+                if (isPaused) {
+                    svg.classList.add('paused');
+                } else {
+                    svg.classList.remove('paused');
+                }
+            }
+        }
+
         function startTimer() {
             if (timer) clearInterval(timer);
 
@@ -962,8 +1189,16 @@
                         document.getElementById('timer-display').textContent = timeRemaining;
                         document.getElementById('timer-label').textContent = 'seconds rest';
 
+                        // Countdown sound cues for last 5 seconds
+                        if (timeRemaining <= 5 && timeRemaining > 0) {
+                            document.getElementById('timer-display').classList.add('countdown-warning');
+                            playCountdownBeep(timeRemaining);
+                        }
+
                         if (timeRemaining <= 0) {
+                            document.getElementById('timer-display').classList.remove('countdown-warning');
                             isResting = false;
+                            playBeep(1000, 400, 'sine'); // End of rest beep
                             advanceWorkout();
                         }
                     }
@@ -986,14 +1221,15 @@
         function togglePause() {
             isPaused = !isPaused;
             document.getElementById('play-pause-btn').textContent = isPaused ? '▶️' : '⏸';
+            updateAnimationPauseState();
         }
 
         function nextExercise() {
             if (isResting) {
                 isResting = false;
+                document.getElementById('timer-display').classList.remove('countdown-warning');
                 advanceWorkout();
             } else {
-                // Mark current set as done, start rest
                 startRest();
             }
         }
@@ -1009,14 +1245,8 @@
             document.getElementById('exercise-name').textContent = '💤 Rest';
             document.getElementById('animation-title').textContent = 'REST & RECOVER';
             document.getElementById('exercise-cue').textContent = 'Breathe deeply. Prepare for the next set.';
-            document.getElementById('exercise-animation').innerHTML = `
-                <svg class="figure-svg" viewBox="0 0 150 150">
-                    <circle cx="75" cy="75" r="40" fill="none" stroke="#4ecdc4" stroke-width="4" opacity="0.3">
-                        <animate attributeName="r" values="30;50;30" dur="2s" repeatCount="indefinite"/>
-                        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
-                    </circle>
-                    <text x="75" y="82" text-anchor="middle" fill="#4ecdc4" font-size="24">😤</text>
-                </svg>`;
+            document.getElementById('exercise-animation').innerHTML = restAnimation;
+            document.getElementById('timer-display').classList.remove('countdown-warning');
         }
 
         function advanceWorkout() {
@@ -1058,6 +1288,9 @@
 
         function completeWorkout() {
             if (timer) clearInterval(timer);
+            playBeep(800, 200);
+            setTimeout(() => playBeep(1000, 200), 250);
+            setTimeout(() => playBeep(1200, 400), 500);
 
             document.getElementById('workout-screen').style.display = 'none';
             document.getElementById('completion-screen').style.display = 'block';
