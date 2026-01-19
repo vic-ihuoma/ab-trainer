@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victor's 4-Week Ab Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Home Screen Styles */
+        #home-screen {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .title-emoji {
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .info-card h3 {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .equipment-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .equipment-tag {
+            background: rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .phase-list {
+            list-style: none;
+        }
+
+        .phase-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .phase-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .music-section {
+            margin-top: 10px;
+        }
+
+        .music-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .music-input::placeholder {
+            color: #666;
+        }
+
+        .music-btn {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+            color: #4ecdc4;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .music-btn:hover {
+            background: rgba(78, 205, 196, 0.3);
+        }
+
+        .week-selector {
+            margin-bottom: 15px;
+        }
+
+        .week-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4ecdc4;
+        }
+
+        .week-select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .week-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Workout Screen Styles */
+        #workout-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .exercise-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .exercise-duration {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .animation-container {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .animation-title {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .stick-figure {
+            position: relative;
+            width: 120px;
+            height: 180px;
+        }
+
+        .cues-container {
+            margin-top: 15px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .cue-text {
+            color: #4ecdc4;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            line-height: 1;
+        }
+
+        .timer-label {
+            color: #888;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .reps-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .up-next {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .up-next-label {
+            color: #888;
+        }
+
+        .up-next-exercise {
+            color: #4ecdc4;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .control-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: #fff;
+            width: 70px;
+            height: 70px;
+            font-size: 1.5rem;
+        }
+
+        .total-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .rest-indicator {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* SVG Animations */
+        .figure-svg {
+            width: 150px;
+            height: 200px;
+        }
+
+        .figure-svg .body-part {
+            stroke: #ff6b6b;
+            stroke-width: 4;
+            stroke-linecap: round;
+            fill: none;
+        }
+
+        .figure-svg .head {
+            fill: none;
+            stroke: #ff6b6b;
+            stroke-width: 4;
+        }
+
+        /* Animation keyframes for different exercises */
+        @keyframes crunch {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-30deg); }
+        }
+
+        @keyframes legRaise {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-80deg); }
+        }
+
+        @keyframes bicycle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Session selector */
+        .session-selector {
+            margin-bottom: 15px;
+        }
+
+        .session-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4ecdc4;
+        }
+
+        .session-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .session-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            background: rgba(78, 205, 196, 0.1);
+            color: #4ecdc4;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .session-btn.active {
+            background: rgba(78, 205, 196, 0.3);
+            border-color: #4ecdc4;
+        }
+
+        .session-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+        }
+
+        /* Completion screen */
+        #completion-screen {
+            display: none;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .completion-emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+        }
+
+        .completion-stats {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="home-screen">
+            <h1 class="title"><span class="title-emoji">💪</span> Victor's 4-Week Ab Trainer</h1>
+            <p class="subtitle">Research-backed ab exercises for maximum results</p>
+
+            <div class="stats-card">
+                <div class="stat">
+                    <div class="stat-value">~30</div>
+                    <div class="stat-label">Minutes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">9</div>
+                    <div class="stat-label">Exercises</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Sessions</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Equipment Needed</h3>
+                <div class="equipment-list">
+                    <span class="equipment-tag">🏋️ Decline Bench</span>
+                    <span class="equipment-tag">🔩 Pull-up Bar</span>
+                    <span class="equipment-tag">⚙️ Cable Machine</span>
+                    <span class="equipment-tag">🧘 Exercise Mat</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Workout Phases</h3>
+                <ul class="phase-list">
+                    <li class="phase-item">
+                        <span class="phase-dot" style="background: #ffc107;"></span>
+                        Session A - Hanging Focus
+                    </li>
+                    <li class="phase-item">
+                        <span class="phase-dot" style="background: #ff6b6b;"></span>
+                        Session B - Decline Focus
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="week-selector">
+                    <label>Select Training Week</label>
+                    <select class="week-select" id="week-select">
+                        <option value="1">Week 1 - Learn Form (Bodyweight)</option>
+                        <option value="2">Week 2 - Build Volume (Higher Reps)</option>
+                        <option value="3">Week 3 - Add Resistance (Weighted)</option>
+                        <option value="4">Week 4 - Peak Intensity (4 Sets)</option>
+                    </select>
+                </div>
+                <div class="session-selector">
+                    <label>Select Session</label>
+                    <div class="session-btns">
+                        <button class="session-btn active" data-session="A">Session A</button>
+                        <button class="session-btn" data-session="B">Session B</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>🎵 Add Your Music</h3>
+                <div class="music-section">
+                    <input type="text" class="music-input" id="music-link" placeholder="Paste YouTube or Spotify link...">
+                    <button class="music-btn" onclick="openMusic()">Open Music</button>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startWorkout()">Start Workout</button>
+        </div>
+
+        <!-- Workout Screen -->
+        <div id="workout-screen">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div class="phase-badge" id="phase-badge">Session A</div>
+
+            <h2 class="exercise-name" id="exercise-name">Hanging Knee Raises</h2>
+            <p class="exercise-duration" id="exercise-duration">3 sets × 10-15 reps</p>
+
+            <div class="animation-container">
+                <div class="animation-title" id="animation-title">HANGING KNEE RAISES</div>
+                <div id="exercise-animation"></div>
+                <div class="cues-container">
+                    <div class="cue-text" id="exercise-cue">Keep your core tight and avoid swinging</div>
+                </div>
+            </div>
+
+            <div id="timer-section">
+                <div class="timer-display" id="timer-display">60</div>
+                <div class="timer-label" id="timer-label">seconds</div>
+            </div>
+
+            <div class="up-next" id="up-next">
+                <span class="up-next-label">Up Next:</span>
+                <span class="up-next-exercise" id="up-next-exercise">Cable Crunches</span>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn secondary" onclick="goHome()">🏠</button>
+                <button class="control-btn secondary" onclick="previousExercise()">⏮</button>
+                <button class="control-btn primary" id="play-pause-btn" onclick="togglePause()">⏸</button>
+                <button class="control-btn secondary" onclick="nextExercise()">⏭</button>
+            </div>
+
+            <div class="total-time" id="total-time">00:00 / 30:00</div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div id="completion-screen">
+            <div class="completion-emoji">🎉</div>
+            <h2 class="completion-title">Workout Complete!</h2>
+            <p class="completion-stats" id="completion-stats">Great job! You finished all exercises.</p>
+            <button class="restart-btn" onclick="goHome()">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        // Exercise data organized by session
+        const exercises = {
+            A: [
+                {
+                    name: "Hanging Knee Raises",
+                    duration: "3 sets × 10-15 reps",
+                    type: "reps",
+                    sets: 3,
+                    reps: "10-15",
+                    restTime: 60,
+                    equipment: "Pull-up Bar",
+                    cue: "Curl your pelvis up toward your ribcage at the top. Don't swing - control the movement.",
+                    animation: "hanging-knee-raise"
+                },
+                {
+                    name: "Cable Crunches",
+                    duration: "3 sets × 12-15 reps",
+                    type: "reps",
+                    sets: 3,
+                    reps: "12-15",
+                    restTime: 60,
+                    equipment: "Cable Machine",
+                    cue: "Keep hips stationary. Crunch ribcage toward pelvis, not just bowing forward.",
+                    animation: "cable-crunch"
+                },
+                {
+                    name: "Reverse Crunches",
+                    duration: "3 sets × 15-20 reps",
+                    type: "reps",
+                    sets: 3,
+                    reps: "15-20",
+                    restTime: 45,
+                    equipment: "Exercise Mat",
+                    cue: "Lift your hips off the mat, not just your legs. Focus on posterior pelvic tilt.",
+                    animation: "reverse-crunch"
+                }
+            ],
+            B: [
+                {
+                    name: "Decline Crunches",
+                    duration: "3 sets × 12-15 reps",
+                    type: "reps",
+                    sets: 3,
+                    reps: "12-15",
+                    restTime: 60,
+                    equipment: "Decline Bench",
+                    cue: "Stop at 35-40° flexion. Don't come all the way up - squeeze at the top, lower slowly.",
+                    animation: "decline-crunch"
+                },
+                {
+                    name: "Hanging Leg Raises",
+                    duration: "3 sets × 8-12 reps",
+                    type: "reps",
+                    sets: 3,
+                    reps: "8-12",
+                    restTime: 60,
+                    equipment: "Pull-up Bar",
+                    cue: "Keep legs straight. Lift with your abs, not momentum. Control the descent.",
+                    animation: "hanging-leg-raise"
+                },
+                {
+                    name: "Bicycle Crunches",
+                    duration: "3 sets × 20 reps (10 each side)",
+                    type: "reps",
+                    sets: 3,
+                    reps: "20 (10 each side)",
+                    restTime: 45,
+                    equipment: "Exercise Mat",
+                    cue: "Rotate your torso fully. Opposite elbow to knee. Keep lower back pressed to mat.",
+                    animation: "bicycle-crunch"
+                }
+            ]
+        };
+
+        // Week modifiers
+        const weekModifiers = {
+            1: { setsMultiplier: 1, note: "Focus on form. Use bodyweight only.", repsAdjust: "lower" },
+            2: { setsMultiplier: 1, note: "Push to higher rep ranges.", repsAdjust: "higher" },
+            3: { setsMultiplier: 1, note: "Add weight where possible.", repsAdjust: "normal" },
+            4: { setsMultiplier: 1.33, note: "Add 4th set to top exercises. Slow negatives (3 sec).", repsAdjust: "normal" }
+        };
+
+        // Animation SVGs for each exercise
+        const animationSVGs = {
+            "hanging-knee-raise": `
+                <svg class="figure-svg" viewBox="0 0 150 200">
+                    <circle class="head" cx="75" cy="25" r="15"/>
+                    <line class="body-part" x1="75" y1="40" x2="75" y2="90"/>
+                    <line class="body-part" x1="75" y1="50" x2="55" y2="20"/>
+                    <line class="body-part" x1="75" y1="50" x2="95" y2="20"/>
+                    <g id="legs-group" style="transform-origin: 75px 90px;">
+                        <line class="body-part" x1="75" y1="90" x2="60" y2="140"/>
+                        <line class="body-part" x1="60" y1="140" x2="55" y2="180"/>
+                        <line class="body-part" x1="75" y1="90" x2="90" y2="140"/>
+                        <line class="body-part" x1="90" y1="140" x2="95" y2="180"/>
+                    </g>
+                    <style>
+                        #legs-group { animation: legRaise 2s ease-in-out infinite; }
+                        @keyframes legRaise {
+                            0%, 100% { transform: rotate(0deg); }
+                            50% { transform: rotate(-70deg); }
+                        }
+                    </style>
+                </svg>`,
+            "cable-crunch": `
+                <svg class="figure-svg" viewBox="0 0 150 200">
+                    <g id="body-group" style="transform-origin: 75px 100px;">
+                        <circle class="head" cx="75" cy="45" r="15"/>
+                        <line class="body-part" x1="75" y1="60" x2="75" y2="110"/>
+                        <line class="body-part" x1="75" y1="70" x2="55" y2="50"/>
+                        <line class="body-part" x1="75" y1="70" x2="95" y2="50"/>
+                    </g>
+                    <line class="body-part" x1="60" y1="110" x2="60" y2="160"/>
+                    <line class="body-part" x1="90" y1="110" x2="90" y2="160"/>
+                    <line class="body-part" x1="60" y1="160" x2="55" y2="180"/>
+                    <line class="body-part" x1="90" y1="160" x2="95" y2="180"/>
+                    <line class="body-part" stroke="#4ecdc4" x1="75" y1="20" x2="75" y2="0"/>
+                    <style>
+                        #body-group { animation: crunchDown 2s ease-in-out infinite; }
+                        @keyframes crunchDown {
+                            0%, 100% { transform: rotate(0deg); }
+                            50% { transform: rotate(35deg); }
+                        }
+                    </style>
+                </svg>`,
+            "reverse-crunch": `
+                <svg class="figure-svg" viewBox="0 0 200 120">
+                    <circle class="head" cx="30" cy="50" r="12"/>
+                    <line class="body-part" x1="42" y1="50" x2="100" y2="50"/>
+                    <line class="body-part" x1="50" y1="50" x2="40" y2="70"/>
+                    <line class="body-part" x1="50" y1="50" x2="40" y2="30"/>
+                    <g id="pelvis-legs" style="transform-origin: 100px 50px;">
+                        <line class="body-part" x1="100" y1="50" x2="140" y2="55"/>
+                        <line class="body-part" x1="140" y1="55" x2="180" y2="50"/>
+                        <line class="body-part" x1="100" y1="50" x2="140" y2="45"/>
+                        <line class="body-part" x1="140" y1="45" x2="180" y2="50"/>
+                    </g>
+                    <style>
+                        #pelvis-legs { animation: reverseCrunch 2s ease-in-out infinite; }
+                        @keyframes reverseCrunch {
+                            0%, 100% { transform: rotate(0deg); }
+                            50% { transform: rotate(-40deg); }
+                        }
+                    </style>
+                </svg>`,
+            "decline-crunch": `
+                <svg class="figure-svg" viewBox="0 0 200 150">
+                    <line class="body-part" stroke="#666" stroke-width="6" x1="20" y1="100" x2="180" y2="60"/>
+                    <g id="upper-body" style="transform-origin: 100px 75px;">
+                        <circle class="head" cx="60" cy="60" r="12"/>
+                        <line class="body-part" x1="72" y1="65" x2="120" y2="80"/>
+                        <line class="body-part" x1="80" y1="68" x2="70" y2="85"/>
+                        <line class="body-part" x1="80" y1="68" x2="65" y2="55"/>
+                    </g>
+                    <line class="body-part" x1="120" y1="80" x2="160" y2="65"/>
+                    <line class="body-part" x1="160" y1="65" x2="175" y2="55"/>
+                    <style>
+                        #upper-body { animation: declineCrunch 2s ease-in-out infinite; }
+                        @keyframes declineCrunch {
+                            0%, 100% { transform: rotate(-15deg); }
+                            50% { transform: rotate(20deg); }
+                        }
+                    </style>
+                </svg>`,
+            "hanging-leg-raise": `
+                <svg class="figure-svg" viewBox="0 0 150 200">
+                    <circle class="head" cx="75" cy="25" r="15"/>
+                    <line class="body-part" x1="75" y1="40" x2="75" y2="90"/>
+                    <line class="body-part" x1="75" y1="50" x2="55" y2="20"/>
+                    <line class="body-part" x1="75" y1="50" x2="95" y2="20"/>
+                    <g id="straight-legs" style="transform-origin: 75px 90px;">
+                        <line class="body-part" x1="75" y1="90" x2="65" y2="170"/>
+                        <line class="body-part" x1="75" y1="90" x2="85" y2="170"/>
+                    </g>
+                    <style>
+                        #straight-legs { animation: straightLegRaise 2.5s ease-in-out infinite; }
+                        @keyframes straightLegRaise {
+                            0%, 100% { transform: rotate(0deg); }
+                            50% { transform: rotate(-85deg); }
+                        }
+                    </style>
+                </svg>`,
+            "bicycle-crunch": `
+                <svg class="figure-svg" viewBox="0 0 200 120">
+                    <g id="bicycle-body" style="transform-origin: 80px 60px;">
+                        <circle class="head" cx="50" cy="40" r="12"/>
+                        <line class="body-part" x1="62" y1="45" x2="100" y2="60"/>
+                        <line class="body-part" x1="70" y1="50" x2="55" y2="65"/>
+                        <line class="body-part" x1="70" y1="50" x2="80" y2="35"/>
+                    </g>
+                    <g id="bicycle-legs" style="transform-origin: 100px 60px;">
+                        <line class="body-part" x1="100" y1="60" x2="130" y2="40"/>
+                        <line class="body-part" x1="130" y1="40" x2="160" y2="50"/>
+                        <line class="body-part" x1="100" y1="60" x2="140" y2="80"/>
+                        <line class="body-part" x1="140" y1="80" x2="170" y2="90"/>
+                    </g>
+                    <style>
+                        #bicycle-body { animation: bicycleTwist 1.5s ease-in-out infinite; }
+                        #bicycle-legs { animation: bicyclePedal 1.5s ease-in-out infinite; }
+                        @keyframes bicycleTwist {
+                            0%, 100% { transform: rotate(-10deg); }
+                            50% { transform: rotate(10deg); }
+                        }
+                        @keyframes bicyclePedal {
+                            0%, 100% { transform: scaleY(1); }
+                            50% { transform: scaleY(-1); }
+                        }
+                    </style>
+                </svg>`
+        };
+
+        // State variables
+        let currentSession = 'A';
+        let currentWeek = 1;
+        let currentExerciseIndex = 0;
+        let currentSet = 1;
+        let isResting = false;
+        let isPaused = false;
+        let timer = null;
+        let timeRemaining = 60;
+        let totalElapsedTime = 0;
+        let totalWorkoutTime = 30 * 60; // 30 minutes estimate
+
+        // Initialize session buttons
+        document.querySelectorAll('.session-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentSession = this.dataset.session;
+            });
+        });
+
+        function openMusic() {
+            const musicLink = document.getElementById('music-link').value.trim();
+            if (musicLink) {
+                window.open(musicLink, '_blank');
+            } else {
+                alert('Please paste a music link first!');
+            }
+        }
+
+        function startWorkout() {
+            currentWeek = parseInt(document.getElementById('week-select').value);
+            currentExerciseIndex = 0;
+            currentSet = 1;
+            isResting = false;
+            totalElapsedTime = 0;
+
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('workout-screen').style.display = 'block';
+            document.getElementById('completion-screen').style.display = 'none';
+
+            updatePhaseColors();
+            loadExercise();
+            startTimer();
+        }
+
+        function updatePhaseColors() {
+            const badge = document.getElementById('phase-badge');
+            if (currentSession === 'A') {
+                badge.style.background = 'rgba(255, 193, 7, 0.2)';
+                badge.style.color = '#ffc107';
+                badge.textContent = 'Session A - Hanging Focus';
+            } else {
+                badge.style.background = 'rgba(255, 107, 107, 0.2)';
+                badge.style.color = '#ff6b6b';
+                badge.textContent = 'Session B - Decline Focus';
+            }
+        }
+
+        function loadExercise() {
+            const sessionExercises = exercises[currentSession];
+            const exercise = sessionExercises[currentExerciseIndex];
+            const weekMod = weekModifiers[currentWeek];
+
+            // Adjust sets for week 4
+            let displaySets = exercise.sets;
+            if (currentWeek === 4 && currentExerciseIndex < 2) {
+                displaySets = 4;
+            }
+
+            document.getElementById('exercise-name').textContent = exercise.name;
+            document.getElementById('exercise-duration').textContent =
+                `Set ${currentSet} of ${displaySets} × ${exercise.reps} reps`;
+            document.getElementById('animation-title').textContent = exercise.name.toUpperCase();
+            document.getElementById('exercise-cue').textContent = exercise.cue;
+
+            // Load animation
+            document.getElementById('exercise-animation').innerHTML = animationSVGs[exercise.animation] || '';
+
+            // Show reps instead of timer for rep-based exercises
+            document.getElementById('timer-display').textContent = exercise.reps.split('-')[0];
+            document.getElementById('timer-label').textContent = 'reps target';
+
+            // Update up next
+            updateUpNext();
+
+            // Update progress
+            updateProgress();
+
+            // Set rest time
+            timeRemaining = exercise.restTime;
+        }
+
+        function updateUpNext() {
+            const sessionExercises = exercises[currentSession];
+            const exercise = sessionExercises[currentExerciseIndex];
+            let displaySets = exercise.sets;
+            if (currentWeek === 4 && currentExerciseIndex < 2) {
+                displaySets = 4;
+            }
+
+            let nextText = '';
+            if (currentSet < displaySets) {
+                nextText = `Rest ${exercise.restTime}s, then Set ${currentSet + 1}`;
+            } else if (currentExerciseIndex < sessionExercises.length - 1) {
+                nextText = sessionExercises[currentExerciseIndex + 1].name;
+            } else {
+                nextText = 'Workout Complete! 🎉';
+            }
+
+            document.getElementById('up-next-exercise').textContent = nextText;
+        }
+
+        function updateProgress() {
+            const sessionExercises = exercises[currentSession];
+            const totalExercises = sessionExercises.length;
+            const progress = ((currentExerciseIndex + (currentSet - 1) / 3) / totalExercises) * 100;
+            document.getElementById('progress-bar').style.width = `${Math.min(progress, 100)}%`;
+        }
+
+        function startTimer() {
+            if (timer) clearInterval(timer);
+
+            timer = setInterval(() => {
+                if (!isPaused) {
+                    totalElapsedTime++;
+                    updateTotalTime();
+
+                    if (isResting) {
+                        timeRemaining--;
+                        document.getElementById('timer-display').textContent = timeRemaining;
+                        document.getElementById('timer-label').textContent = 'seconds rest';
+
+                        if (timeRemaining <= 0) {
+                            isResting = false;
+                            advanceWorkout();
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTotalTime() {
+            const elapsed = formatTime(totalElapsedTime);
+            const total = formatTime(totalWorkoutTime);
+            document.getElementById('total-time').textContent = `${elapsed} / ${total}`;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            document.getElementById('play-pause-btn').textContent = isPaused ? '▶️' : '⏸';
+        }
+
+        function nextExercise() {
+            if (isResting) {
+                isResting = false;
+                advanceWorkout();
+            } else {
+                // Mark current set as done, start rest
+                startRest();
+            }
+        }
+
+        function startRest() {
+            const sessionExercises = exercises[currentSession];
+            const exercise = sessionExercises[currentExerciseIndex];
+
+            isResting = true;
+            timeRemaining = exercise.restTime;
+            document.getElementById('timer-display').textContent = timeRemaining;
+            document.getElementById('timer-label').textContent = 'seconds rest';
+            document.getElementById('exercise-name').textContent = '💤 Rest';
+            document.getElementById('animation-title').textContent = 'REST & RECOVER';
+            document.getElementById('exercise-cue').textContent = 'Breathe deeply. Prepare for the next set.';
+            document.getElementById('exercise-animation').innerHTML = `
+                <svg class="figure-svg" viewBox="0 0 150 150">
+                    <circle cx="75" cy="75" r="40" fill="none" stroke="#4ecdc4" stroke-width="4" opacity="0.3">
+                        <animate attributeName="r" values="30;50;30" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="75" y="82" text-anchor="middle" fill="#4ecdc4" font-size="24">😤</text>
+                </svg>`;
+        }
+
+        function advanceWorkout() {
+            const sessionExercises = exercises[currentSession];
+            const exercise = sessionExercises[currentExerciseIndex];
+
+            let displaySets = exercise.sets;
+            if (currentWeek === 4 && currentExerciseIndex < 2) {
+                displaySets = 4;
+            }
+
+            if (currentSet < displaySets) {
+                currentSet++;
+                loadExercise();
+            } else if (currentExerciseIndex < sessionExercises.length - 1) {
+                currentExerciseIndex++;
+                currentSet = 1;
+                loadExercise();
+            } else {
+                completeWorkout();
+            }
+        }
+
+        function previousExercise() {
+            if (currentSet > 1) {
+                currentSet--;
+                isResting = false;
+                loadExercise();
+            } else if (currentExerciseIndex > 0) {
+                currentExerciseIndex--;
+                currentSet = exercises[currentSession][currentExerciseIndex].sets;
+                if (currentWeek === 4 && currentExerciseIndex < 2) {
+                    currentSet = 4;
+                }
+                isResting = false;
+                loadExercise();
+            }
+        }
+
+        function completeWorkout() {
+            if (timer) clearInterval(timer);
+
+            document.getElementById('workout-screen').style.display = 'none';
+            document.getElementById('completion-screen').style.display = 'block';
+
+            const weekMod = weekModifiers[currentWeek];
+            document.getElementById('completion-stats').innerHTML = `
+                Session ${currentSession} complete in ${formatTime(totalElapsedTime)}!<br>
+                <small style="color: #4ecdc4;">${weekMod.note}</small>
+            `;
+        }
+
+        function goHome() {
+            if (timer) clearInterval(timer);
+
+            document.getElementById('home-screen').style.display = 'block';
+            document.getElementById('workout-screen').style.display = 'none';
+            document.getElementById('completion-screen').style.display = 'none';
+
+            isPaused = false;
+            document.getElementById('play-pause-btn').textContent = '⏸';
+        }
+    </script>
+</body>
+</html>
