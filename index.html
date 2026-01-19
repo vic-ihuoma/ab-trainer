@@ -754,441 +754,231 @@
             4: { setsMultiplier: 1.33, note: "Add 4th set to top exercises. Slow negatives (3 sec).", repsAdjust: "normal" }
         };
 
-        // Rich Animation SVGs for each exercise - Articulated skeletal animations
+        // Clean stick figure animations
         const animationSVGs = {
             "hanging-knee-raise": `
-                <svg class="figure-svg" viewBox="0 0 200 300" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3"/>
-                        </filter>
-                    </defs>
-
+                <svg class="figure-svg" viewBox="0 0 200 250" id="exercise-svg">
                     <!-- Pull-up bar -->
-                    <rect x="15" y="8" width="170" height="10" rx="5" fill="#444" filter="url(#shadow)"/>
-                    <rect x="25" y="8" width="15" height="10" rx="2" fill="#666"/>
-                    <rect x="160" y="8" width="15" height="10" rx="2" fill="#666"/>
+                    <line x1="30" y1="15" x2="170" y2="15" stroke="#666" stroke-width="6" stroke-linecap="round"/>
 
-                    <!-- Left Arm -->
-                    <g id="leftArm">
-                        <rect x="58" y="18" width="12" height="45" rx="6" fill="url(#skinGrad)">
-                            <animate attributeName="height" values="45;42;45" dur="2.5s" repeatCount="indefinite"/>
-                        </rect>
-                        <circle cx="64" cy="18" r="8" fill="url(#skinGrad)"/>
-                    </g>
-
-                    <!-- Right Arm -->
-                    <g id="rightArm">
-                        <rect x="130" y="18" width="12" height="45" rx="6" fill="url(#skinGrad)">
-                            <animate attributeName="height" values="45;42;45" dur="2.5s" repeatCount="indefinite"/>
-                        </rect>
-                        <circle cx="136" cy="18" r="8" fill="url(#skinGrad)"/>
-                    </g>
+                    <!-- Arms -->
+                    <line x1="70" y1="15" x2="70" y2="45" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="130" y1="15" x2="130" y2="45" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                     <!-- Head -->
-                    <circle cx="100" cy="75" r="22" fill="url(#skinGrad)" filter="url(#shadow)"/>
-                    <circle cx="92" cy="72" r="3" fill="#333"/>
-                    <circle cx="108" cy="72" r="3" fill="#333"/>
-                    <path d="M94 82 Q100 88 106 82" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                    <ellipse cx="100" cy="55" rx="22" ry="8" fill="#4a3728"/>
+                    <circle cx="100" cy="60" r="15" fill="none" stroke="#ff6b6b" stroke-width="4"/>
 
                     <!-- Torso -->
-                    <rect x="75" y="97" width="50" height="60" rx="8" fill="url(#shirtGrad)" filter="url(#shadow)"/>
+                    <line x1="100" y1="75" x2="100" y2="130" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
-                    <!-- Hips/Shorts -->
-                    <rect x="72" y="152" width="56" height="25" rx="5" fill="#333"/>
-
-                    <!-- Animated Legs with proper knee bend -->
-                    <g id="legsGroup">
-                        <!-- Left Thigh -->
-                        <rect x="75" y="175" width="20" height="50" rx="10" fill="url(#skinGrad)">
+                    <!-- Animated legs -->
+                    <g id="legs">
+                        <animateTransform attributeName="transform" type="rotate"
+                            values="0 100 130; -80 100 130; 0 100 130"
+                            dur="2s" repeatCount="indefinite" calcMode="spline"
+                            keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+                        <!-- Thighs -->
+                        <line x1="100" y1="130" x2="85" y2="175" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="100" y1="130" x2="115" y2="175" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Lower legs with knee bend -->
+                        <line x1="85" y1="175" x2="80" y2="220" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
                             <animateTransform attributeName="transform" type="rotate"
-                                values="0 85 175; -90 85 175; 0 85 175"
-                                dur="2.5s" repeatCount="indefinite"/>
-                        </rect>
-
-                        <!-- Left Lower Leg (bends at knee) -->
-                        <g>
+                                values="0 85 175; 90 85 175; 0 85 175"
+                                dur="2s" repeatCount="indefinite" calcMode="spline"
+                                keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+                        </line>
+                        <line x1="115" y1="175" x2="120" y2="220" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
                             <animateTransform attributeName="transform" type="rotate"
-                                values="0 85 175; -90 85 175; 0 85 175"
-                                dur="2.5s" repeatCount="indefinite"/>
-                            <rect x="75" y="220" width="18" height="45" rx="9" fill="url(#skinGrad)">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="0 84 220; 90 84 220; 0 84 220"
-                                    dur="2.5s" repeatCount="indefinite"/>
-                            </rect>
-                            <ellipse cx="84" cy="268" rx="12" ry="6" fill="#333">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="0 84 220; 90 84 220; 0 84 220"
-                                    dur="2.5s" repeatCount="indefinite"/>
-                            </ellipse>
-                        </g>
-
-                        <!-- Right Thigh -->
-                        <rect x="105" y="175" width="20" height="50" rx="10" fill="url(#skinGrad)">
-                            <animateTransform attributeName="transform" type="rotate"
-                                values="0 115 175; -90 115 175; 0 115 175"
-                                dur="2.5s" repeatCount="indefinite"/>
-                        </rect>
-
-                        <!-- Right Lower Leg -->
-                        <g>
-                            <animateTransform attributeName="transform" type="rotate"
-                                values="0 115 175; -90 115 175; 0 115 175"
-                                dur="2.5s" repeatCount="indefinite"/>
-                            <rect x="107" y="220" width="18" height="45" rx="9" fill="url(#skinGrad)">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="0 116 220; 90 116 220; 0 116 220"
-                                    dur="2.5s" repeatCount="indefinite"/>
-                            </rect>
-                            <ellipse cx="116" cy="268" rx="12" ry="6" fill="#333">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="0 116 220; 90 116 220; 0 116 220"
-                                    dur="2.5s" repeatCount="indefinite"/>
-                            </ellipse>
-                        </g>
+                                values="0 115 175; 90 115 175; 0 115 175"
+                                dur="2s" repeatCount="indefinite" calcMode="spline"
+                                keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+                        </line>
                     </g>
                 </svg>`,
 
             "cable-crunch": `
-                <svg class="figure-svg" viewBox="0 0 200 280" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                    </defs>
-
-                    <!-- Cable machine top -->
-                    <rect x="70" y="0" width="60" height="20" rx="4" fill="#444"/>
-                    <rect x="95" y="20" width="10" height="5" fill="#666"/>
-
-                    <!-- Cable rope -->
-                    <line x1="100" y1="25" x2="100" y2="70" stroke="#4ecdc4" stroke-width="4" stroke-linecap="round">
-                        <animate attributeName="y2" values="70;90;70" dur="2s" repeatCount="indefinite"/>
+                <svg class="figure-svg" viewBox="0 0 200 220" id="exercise-svg">
+                    <!-- Cable machine -->
+                    <rect x="75" y="5" width="50" height="15" rx="3" fill="#666"/>
+                    <line x1="100" y1="20" x2="100" y2="50" stroke="#4ecdc4" stroke-width="3">
+                        <animate attributeName="y2" values="50;70;50" dur="2s" repeatCount="indefinite"/>
                     </line>
-
-                    <!-- Rope handle -->
-                    <circle cx="100" cy="70" r="10" fill="#4ecdc4">
-                        <animate attributeName="cy" values="70;90;70" dur="2s" repeatCount="indefinite"/>
+                    <circle cx="100" cy="50" r="6" fill="#4ecdc4">
+                        <animate attributeName="cy" values="50;70;50" dur="2s" repeatCount="indefinite"/>
                     </circle>
 
-                    <!-- Animated upper body group -->
+                    <!-- Animated upper body -->
                     <g id="upperBody">
                         <animateTransform attributeName="transform" type="rotate"
-                            values="0 100 200; 45 100 200; 0 100 200"
+                            values="0 100 150; 50 100 150; 0 100 150"
                             dur="2s" repeatCount="indefinite"/>
 
-                        <!-- Hands on rope -->
-                        <circle cx="90" cy="80" r="10" fill="url(#skinGrad2)">
-                            <animate attributeName="cy" values="80;100;80" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-                        <circle cx="110" cy="80" r="10" fill="url(#skinGrad2)">
-                            <animate attributeName="cy" values="80;100;80" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-
-                        <!-- Forearms -->
-                        <rect x="82" y="85" width="14" height="35" rx="7" fill="url(#skinGrad2)">
-                            <animate attributeName="y" values="85;105;85" dur="2s" repeatCount="indefinite"/>
-                        </rect>
-                        <rect x="104" y="85" width="14" height="35" rx="7" fill="url(#skinGrad2)">
-                            <animate attributeName="y" values="85;105;85" dur="2s" repeatCount="indefinite"/>
-                        </rect>
-
-                        <!-- Upper arms -->
-                        <rect x="78" y="115" width="16" height="30" rx="8" fill="url(#skinGrad2)"/>
-                        <rect x="106" y="115" width="16" height="30" rx="8" fill="url(#skinGrad2)"/>
+                        <!-- Arms to rope -->
+                        <line x1="80" y1="100" x2="90" y2="60" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="y2" values="60;80;60" dur="2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="120" y1="100" x2="110" y2="60" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="y2" values="60;80;60" dur="2s" repeatCount="indefinite"/>
+                        </line>
 
                         <!-- Head -->
-                        <circle cx="100" cy="155" r="20" fill="url(#skinGrad2)"/>
-                        <circle cx="94" cy="152" r="2.5" fill="#333"/>
-                        <circle cx="106" cy="152" r="2.5" fill="#333"/>
-                        <path d="M95 162 Q100 166 105 162" stroke="#333" stroke-width="2" fill="none"/>
+                        <circle cx="100" cy="90" r="12" fill="none" stroke="#ff6b6b" stroke-width="4"/>
 
                         <!-- Torso -->
-                        <rect x="78" y="175" width="44" height="50" rx="6" fill="url(#shirtGrad2)"/>
+                        <line x1="100" y1="102" x2="100" y2="150" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
                     </g>
 
                     <!-- Kneeling legs (static) -->
-                    <ellipse cx="100" cy="235" rx="35" ry="12" fill="#333"/>
-                    <rect x="70" y="235" width="22" height="35" rx="11" fill="url(#skinGrad2)"/>
-                    <rect x="108" y="235" width="22" height="35" rx="11" fill="url(#skinGrad2)"/>
-                    <ellipse cx="81" cy="275" rx="15" ry="6" fill="#333"/>
-                    <ellipse cx="119" cy="275" rx="15" ry="6" fill="#333"/>
+                    <line x1="100" y1="150" x2="80" y2="180" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="100" y1="150" x2="120" y2="180" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="80" y1="180" x2="70" y2="200" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="120" y1="180" x2="130" y2="200" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
                 </svg>`,
 
             "reverse-crunch": `
-                <svg class="figure-svg" viewBox="0 0 300 140" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                    </defs>
-
+                <svg class="figure-svg" viewBox="0 0 250 120" id="exercise-svg">
                     <!-- Mat -->
-                    <rect x="5" y="115" width="290" height="15" rx="4" fill="#38b6ba" opacity="0.3"/>
+                    <line x1="10" y1="100" x2="240" y2="100" stroke="#4ecdc4" stroke-width="4" opacity="0.4"/>
 
-                    <!-- Head (static) -->
-                    <circle cx="40" cy="85" r="18" fill="url(#skinGrad3)"/>
-                    <circle cx="46" cy="82" r="2.5" fill="#333"/>
-                    <path d="M42 92 Q47 95 52 92" stroke="#333" stroke-width="2" fill="none"/>
+                    <!-- Head -->
+                    <circle cx="35" cy="75" r="12" fill="none" stroke="#ff6b6b" stroke-width="4"/>
 
                     <!-- Arms behind head -->
-                    <rect x="20" y="70" width="30" height="14" rx="7" fill="url(#skinGrad3)"/>
+                    <line x1="35" y1="65" x2="20" y2="55" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="35" y1="65" x2="50" y2="55" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
-                    <!-- Upper body (static on ground) -->
-                    <rect x="55" y="75" width="70" height="35" rx="6" fill="url(#shirtGrad3)"/>
+                    <!-- Torso (on ground) -->
+                    <line x1="47" y1="75" x2="120" y2="85" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
-                    <!-- Animated hip/pelvis -->
-                    <g id="pelvisGroup">
+                    <!-- Animated lower body -->
+                    <g id="lowerBody">
                         <animateTransform attributeName="transform" type="rotate"
-                            values="0 130 95; -35 130 95; 0 130 95"
+                            values="0 120 85; -40 120 85; 0 120 85"
                             dur="2s" repeatCount="indefinite"/>
 
                         <!-- Hips -->
-                        <rect x="120" y="80" width="30" height="28" rx="5" fill="#333"/>
+                        <circle cx="120" cy="85" r="5" fill="#ff6b6b"/>
 
                         <!-- Thighs -->
-                        <rect x="125" y="65" width="18" height="45" rx="9" fill="url(#skinGrad3)" transform="rotate(-20 134 87)"/>
-                        <rect x="140" y="65" width="18" height="45" rx="9" fill="url(#skinGrad3)" transform="rotate(-20 149 87)"/>
+                        <line x1="120" y1="85" x2="160" y2="70" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
-                        <!-- Lower legs with knee bend -->
-                        <g transform="rotate(-20 145 65)">
-                            <rect x="130" y="30" width="16" height="40" rx="8" fill="url(#skinGrad3)">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="40 138 70; -10 138 70; 40 138 70"
-                                    dur="2s" repeatCount="indefinite"/>
-                            </rect>
-                            <rect x="148" y="30" width="16" height="40" rx="8" fill="url(#skinGrad3)">
-                                <animateTransform attributeName="transform" type="rotate"
-                                    values="40 156 70; -10 156 70; 40 156 70"
-                                    dur="2s" repeatCount="indefinite"/>
-                            </rect>
-                        </g>
-
-                        <!-- Feet -->
-                        <ellipse cx="155" cy="35" rx="8" ry="14" fill="#333">
-                            <animate attributeName="cy" values="35;15;35" dur="2s" repeatCount="indefinite"/>
-                            <animate attributeName="cx" values="155;175;155" dur="2s" repeatCount="indefinite"/>
-                        </ellipse>
-                        <ellipse cx="175" cy="35" rx="8" ry="14" fill="#333">
-                            <animate attributeName="cy" values="35;15;35" dur="2s" repeatCount="indefinite"/>
-                            <animate attributeName="cx" values="175;195;175" dur="2s" repeatCount="indefinite"/>
-                        </ellipse>
+                        <!-- Lower legs -->
+                        <line x1="160" y1="70" x2="190" y2="55" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                            <animateTransform attributeName="transform" type="rotate"
+                                values="0 160 70; 30 160 70; 0 160 70"
+                                dur="2s" repeatCount="indefinite"/>
+                        </line>
                     </g>
                 </svg>`,
 
             "decline-crunch": `
-                <svg class="figure-svg" viewBox="0 0 300 180" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                        <linearGradient id="benchGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#555"/>
-                            <stop offset="100%" style="stop-color:#333"/>
-                        </linearGradient>
-                    </defs>
-
+                <svg class="figure-svg" viewBox="0 0 250 150" id="exercise-svg">
                     <!-- Decline bench -->
-                    <rect x="30" y="90" width="220" height="18" rx="4" fill="url(#benchGrad)" transform="rotate(-20 140 99)"/>
-                    <rect x="230" y="45" width="35" height="50" rx="6" fill="#444"/>
-                    <rect x="235" y="55" width="25" height="12" rx="3" fill="#666"/>
-                    <rect x="235" y="73" width="25" height="12" rx="3" fill="#666"/>
+                    <line x1="30" y1="120" x2="200" y2="60" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+                    <rect x="190" y="40" width="30" height="40" rx="4" fill="#555"/>
 
                     <!-- Feet hooked -->
-                    <ellipse cx="248" cy="61" rx="10" ry="7" fill="#333"/>
-                    <ellipse cx="248" cy="79" rx="10" ry="7" fill="#333"/>
+                    <circle cx="205" cy="55" r="5" fill="#ff6b6b"/>
+                    <circle cx="205" cy="70" r="5" fill="#ff6b6b"/>
 
                     <!-- Legs on bench -->
-                    <rect x="195" y="50" width="45" height="18" rx="9" fill="url(#skinGrad4)" transform="rotate(-20 217 59)"/>
-                    <rect x="195" y="68" width="45" height="18" rx="9" fill="url(#skinGrad4)" transform="rotate(-20 217 77)"/>
-
-                    <!-- Hips -->
-                    <ellipse cx="175" cy="85" rx="20" ry="18" fill="#333" transform="rotate(-20 175 85)"/>
+                    <line x1="205" y1="60" x2="160" y2="80" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                     <!-- Animated upper body -->
                     <g id="crunchBody">
                         <animateTransform attributeName="transform" type="rotate"
-                            values="-40 160 100; 15 160 100; -40 160 100"
+                            values="-30 140 90; 20 140 90; -30 140 90"
                             dur="2.5s" repeatCount="indefinite"/>
 
-                        <!-- Torso -->
-                        <rect x="100" y="70" width="70" height="45" rx="8" fill="url(#shirtGrad4)"/>
+                        <!-- Hips -->
+                        <circle cx="140" cy="90" r="5" fill="#ff6b6b"/>
 
-                        <!-- Arms crossed -->
-                        <rect x="105" y="78" width="55" height="14" rx="7" fill="url(#skinGrad4)"/>
-                        <rect x="115" y="90" width="40" height="12" rx="6" fill="url(#skinGrad4)"/>
+                        <!-- Torso -->
+                        <line x1="140" y1="90" x2="90" y2="100" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                         <!-- Head -->
-                        <circle cx="85" cy="92" r="18" fill="url(#skinGrad4)"/>
-                        <circle cx="78" cy="89" r="2.5" fill="#333"/>
-                        <circle cx="88" cy="89" r="2.5" fill="#333"/>
-                        <path d="M78 99 Q83 103 88 99" stroke="#333" stroke-width="2" fill="none"/>
+                        <circle cx="75" cy="100" r="12" fill="none" stroke="#ff6b6b" stroke-width="4"/>
+
+                        <!-- Arms crossed -->
+                        <line x1="100" y1="95" x2="115" y2="105" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="105" y1="105" x2="120" y2="95" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
                     </g>
                 </svg>`,
 
             "hanging-leg-raise": `
-                <svg class="figure-svg" viewBox="0 0 200 320" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                    </defs>
-
+                <svg class="figure-svg" viewBox="0 0 200 280" id="exercise-svg">
                     <!-- Pull-up bar -->
-                    <rect x="15" y="8" width="170" height="12" rx="6" fill="#444"/>
-                    <rect x="25" y="8" width="18" height="12" rx="3" fill="#555"/>
-                    <rect x="157" y="8" width="18" height="12" rx="3" fill="#555"/>
+                    <line x1="30" y1="15" x2="170" y2="15" stroke="#666" stroke-width="6" stroke-linecap="round"/>
 
-                    <!-- Arms hanging -->
-                    <rect x="55" y="20" width="16" height="55" rx="8" fill="url(#skinGrad5)"/>
-                    <rect x="129" y="20" width="16" height="55" rx="8" fill="url(#skinGrad5)"/>
-                    <circle cx="63" cy="20" r="10" fill="url(#skinGrad5)"/>
-                    <circle cx="137" cy="20" r="10" fill="url(#skinGrad5)"/>
+                    <!-- Arms -->
+                    <line x1="70" y1="15" x2="70" y2="50" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="130" y1="15" x2="130" y2="50" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                     <!-- Head -->
-                    <circle cx="100" cy="90" r="22" fill="url(#skinGrad5)"/>
-                    <circle cx="92" cy="87" r="3" fill="#333"/>
-                    <circle cx="108" cy="87" r="3" fill="#333"/>
-                    <path d="M94 98 Q100 104 106 98" stroke="#333" stroke-width="2.5" fill="none"/>
-                    <ellipse cx="100" cy="70" rx="22" ry="8" fill="#4a3728"/>
+                    <circle cx="100" cy="65" r="15" fill="none" stroke="#ff6b6b" stroke-width="4"/>
 
                     <!-- Torso -->
-                    <rect x="75" y="112" width="50" height="60" rx="8" fill="url(#shirtGrad5)"/>
-
-                    <!-- Hips -->
-                    <rect x="70" y="168" width="60" height="28" rx="6" fill="#333"/>
+                    <line x1="100" y1="80" x2="100" y2="140" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                     <!-- Animated straight legs -->
                     <g id="straightLegs">
                         <animateTransform attributeName="transform" type="rotate"
-                            values="0 100 182; -95 100 182; 0 100 182"
+                            values="0 100 140; -90 100 140; 0 100 140"
                             dur="3s" repeatCount="indefinite" calcMode="spline"
                             keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
 
-                        <!-- Left leg -->
-                        <rect x="72" y="192" width="22" height="55" rx="11" fill="url(#skinGrad5)"/>
-                        <rect x="74" y="245" width="20" height="50" rx="10" fill="url(#skinGrad5)"/>
-                        <ellipse cx="84" cy="300" rx="14" ry="7" fill="#333"/>
-
-                        <!-- Right leg -->
-                        <rect x="106" y="192" width="22" height="55" rx="11" fill="url(#skinGrad5)"/>
-                        <rect x="108" y="245" width="20" height="50" rx="10" fill="url(#skinGrad5)"/>
-                        <ellipse cx="118" cy="300" rx="14" ry="7" fill="#333"/>
+                        <!-- Legs kept straight -->
+                        <line x1="100" y1="140" x2="90" y2="220" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="100" y1="140" x2="110" y2="220" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
                     </g>
                 </svg>`,
 
             "bicycle-crunch": `
-                <svg class="figure-svg" viewBox="0 0 300 160" id="exercise-svg">
-                    <defs>
-                        <linearGradient id="skinGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#ffc4a8"/>
-                            <stop offset="100%" style="stop-color:#e8a07a"/>
-                        </linearGradient>
-                        <linearGradient id="shirtGrad6" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#5ce1e6"/>
-                            <stop offset="100%" style="stop-color:#38b6ba"/>
-                        </linearGradient>
-                    </defs>
-
+                <svg class="figure-svg" viewBox="0 0 250 120" id="exercise-svg">
                     <!-- Mat -->
-                    <rect x="5" y="135" width="290" height="15" rx="4" fill="#38b6ba" opacity="0.3"/>
+                    <line x1="10" y1="105" x2="240" y2="105" stroke="#4ecdc4" stroke-width="4" opacity="0.4"/>
 
-                    <!-- Upper body with twist animation -->
-                    <g id="torsoTwist">
+                    <!-- Upper body with twist -->
+                    <g id="upperTwist">
                         <animateTransform attributeName="transform" type="rotate"
-                            values="-15 120 100; 15 120 100; -15 120 100"
-                            dur="1.8s" repeatCount="indefinite"/>
+                            values="-10 100 70; 10 100 70; -10 100 70"
+                            dur="1.5s" repeatCount="indefinite"/>
 
                         <!-- Head -->
-                        <circle cx="55" cy="70" r="18" fill="url(#skinGrad6)">
-                            <animate attributeName="cx" values="55;75;55" dur="1.8s" repeatCount="indefinite"/>
-                        </circle>
-                        <circle cx="60" cy="67" r="2.5" fill="#333">
-                            <animate attributeName="cx" values="60;80;60" dur="1.8s" repeatCount="indefinite"/>
+                        <circle cx="50" cy="60" r="12" fill="none" stroke="#ff6b6b" stroke-width="4">
+                            <animate attributeName="cx" values="50;70;50" dur="1.5s" repeatCount="indefinite"/>
                         </circle>
 
                         <!-- Torso -->
-                        <rect x="65" y="65" width="75" height="45" rx="8" fill="url(#shirtGrad6)"/>
+                        <line x1="62" y1="60" x2="120" y2="75" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
 
                         <!-- Arm reaching to knee -->
-                        <rect x="95" y="55" width="50" height="14" rx="7" fill="url(#skinGrad6)">
-                            <animateTransform attributeName="transform" type="rotate"
-                                values="-30 95 62; 30 95 62; -30 95 62"
-                                dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
+                        <line x1="80" y1="65" x2="130" y2="50" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="x2" values="130;150;130" dur="1.5s" repeatCount="indefinite"/>
+                            <animate attributeName="y2" values="50;70;50" dur="1.5s" repeatCount="indefinite"/>
+                        </line>
 
                         <!-- Arm behind head -->
-                        <rect x="30" y="55" width="35" height="12" rx="6" fill="url(#skinGrad6)">
-                            <animate attributeName="x" values="30;50;30" dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
+                        <line x1="50" y1="50" x2="35" y2="45" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="x1" values="50;70;50" dur="1.5s" repeatCount="indefinite"/>
+                        </line>
                     </g>
 
-                    <!-- Hips (relatively static) -->
-                    <ellipse cx="155" cy="115" rx="22" ry="15" fill="#333"/>
+                    <!-- Hips -->
+                    <circle cx="130" cy="80" r="5" fill="#ff6b6b"/>
 
-                    <!-- Animated pedaling legs -->
+                    <!-- Pedaling legs -->
                     <!-- Left leg (bends in) -->
-                    <g id="leftLegBicycle">
-                        <rect x="145" y="85" width="18" height="40" rx="9" fill="url(#skinGrad6)">
-                            <animateTransform attributeName="transform" type="rotate"
-                                values="-60 154 115; 20 154 115; -60 154 115"
-                                dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
-                        <rect x="140" y="55" width="16" height="35" rx="8" fill="url(#skinGrad6)">
-                            <animate attributeName="x" values="140;175;140" dur="1.8s" repeatCount="indefinite"/>
-                            <animate attributeName="y" values="55;95;55" dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
-                        <ellipse cx="148" cy="52" rx="10" ry="14" fill="#333">
-                            <animate attributeName="cx" values="148;183;148" dur="1.8s" repeatCount="indefinite"/>
-                            <animate attributeName="cy" values="52;105;52" dur="1.8s" repeatCount="indefinite"/>
-                        </ellipse>
-                    </g>
+                    <line x1="130" y1="80" x2="150" y2="55" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                        <animate attributeName="x2" values="150;175;150" dur="1.5s" repeatCount="indefinite"/>
+                        <animate attributeName="y2" values="55;85;55" dur="1.5s" repeatCount="indefinite"/>
+                    </line>
 
                     <!-- Right leg (extends out) -->
-                    <g id="rightLegBicycle">
-                        <rect x="165" y="100" width="18" height="40" rx="9" fill="url(#skinGrad6)">
-                            <animateTransform attributeName="transform" type="rotate"
-                                values="20 174 115; -60 174 115; 20 174 115"
-                                dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
-                        <rect x="200" y="95" width="16" height="35" rx="8" fill="url(#skinGrad6)">
-                            <animate attributeName="x" values="200;165;200" dur="1.8s" repeatCount="indefinite"/>
-                            <animate attributeName="y" values="95;55;95" dur="1.8s" repeatCount="indefinite"/>
-                        </rect>
-                        <ellipse cx="220" cy="105" rx="10" ry="14" fill="#333">
-                            <animate attributeName="cx" values="220;173;220" dur="1.8s" repeatCount="indefinite"/>
-                            <animate attributeName="cy" values="105;52;105" dur="1.8s" repeatCount="indefinite"/>
-                        </ellipse>
-                    </g>
+                    <line x1="130" y1="80" x2="200" y2="85" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round">
+                        <animate attributeName="x2" values="200;160;200" dur="1.5s" repeatCount="indefinite"/>
+                        <animate attributeName="y2" values="85;55;85" dur="1.5s" repeatCount="indefinite"/>
+                    </line>
                 </svg>`
         };
 
